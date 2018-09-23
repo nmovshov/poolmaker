@@ -5,6 +5,7 @@
 #---------------------------------------------------------------------------------
 import sys, os, shutil
 import argparse
+import csv
 cout = sys.stdout.write
 cerr = sys.stderr.write
 
@@ -13,26 +14,44 @@ def _main():
     # Parse command line arguments
     args = _PCL()
 
+    # Load competitors list
+    try:
+        with open(args.competitors_file, 'rb') as f:
+            fencers = []
+            reader = csv.reader(f, delimiter=args.delimiter)
+            for row in reader:
+                assert(len(row)==4)
+                fencers.append(row)
+    except:
+        print("Error while reading competitors list.")
+        print("Check that the file exists and has the correct format:")
+        print("  LAST,  first,  club, rating")
+        print
+        raise
+
+    # Determine pool sizes
+    print(fencers)
+    pass
+
     # Finalize and return
     return
 
 def _PCL():
 
     parser = argparse.ArgumentParser(
-        description="POOLMAKER " +
-        " - Fencing tournament toy problem",
-        epilog="WARNING: just a toy problem.",
+        description="POOLMAKER - plan a fencing tournament",
+        epilog="WARNING: this is a toy problem, not a real tool.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-    parser.add_argument('keys_file', help="file containing list of keys to " +
-        "filter on, one per line")
-    parser.add_argument('target_file', help="column delimited file containing " +
-        "records to be filtered")
+    parser.add_argument('competitors_file', help="csv file containing list of " +
+        "competitors with ratings and club affiliation.")
+    parser.add_argument('-O','--output-file', help="Specify output to file " +
+        "instead of to stdout.")
     parser.add_argument('-d','--delimiter',
-        help="single-character column delimiter used in target file"+
-             " (may need to be double-quoted)",
+        help="single-character column delimiter used in input file if " +
+             "non-standard. (Note: may need to be double-quoted.)",
         choices=['t','s',',',';',' ','/'],
-        default='t')
+        default=',')
 
     args = parser.parse_args()
 
@@ -44,6 +63,5 @@ def _PCL():
     return args
 
 if __name__ == "__main__":
-    print "Running POOLMAKER"
     _main()
     pass
