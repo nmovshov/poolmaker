@@ -32,8 +32,19 @@ def _main():
         raise
 
     # Determine pool sizes
-    print(fencers)
-    pass
+    N = len(fencers)
+    fs = (6,7)
+    ps = _lmfactor(N,6,7)
+    if ps is None:
+        fs = (7,8)
+        ps = _lmfactor(N,7,8)
+    if ps is None:
+        fs = (5,6)
+        ps = _lmfactor(N,5,6)
+    if ps is None:
+        raise Exception
+    pools = ps[0]*[fs[0]] + ps[1]*[fs[1]]
+    print pools
 
     # Finalize and return
     return
@@ -68,10 +79,14 @@ def _lmfactor(N, L, M):
     # Return factorization of positive integer into two arbitrary positive integers.
 
     assert(N > 0)
+    if N%L == 0:
+        return (int(N/L), 0)
+    if N%M == 0:
+        return (0, int(N/M))
     for k in range(int(math.ceil((N - M)/L) + 2)):
         j = (N - k*L)/M
         if j >= 0 and (int(j) - j) == 0:
-            return (k, j)
+            return (k, int(j))
     return None
 
 if __name__ == "__main__":
