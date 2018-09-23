@@ -45,6 +45,5 @@ def _PCL():
 
 if __name__ == "__main__":
     print "Running POOLMAKER"
-    sys.exit(0)
     _main()
     pass
