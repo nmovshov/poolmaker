@@ -3,7 +3,9 @@
 #
 # Bugs and questions to: Naor Movshovitz (nmovshov@gmail.com)
 #---------------------------------------------------------------------------------
+from __future__ import division
 import sys, os, shutil
+import math
 import argparse
 import csv
 cout = sys.stdout.write
@@ -61,6 +63,16 @@ def _PCL():
         args.delimiter = ' '
 
     return args
+
+def _lmfactor(N, L, M):
+    # Return factorization of positive integer into two arbitrary positive integers.
+
+    assert(N > 0)
+    for k in range(int(math.ceil((N - M)/L) + 2)):
+        j = (N - k*L)/M
+        if j >= 0 and (int(j) - j) == 0:
+            return (k, j)
+    return None
 
 if __name__ == "__main__":
     _main()
