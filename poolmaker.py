@@ -23,6 +23,7 @@ def _main():
             reader = csv.reader(f, delimiter=args.delimiter)
             for row in reader:
                 assert(len(row)==4)
+                row = [k.strip() for k in row]
                 fencers.append(row)
     except:
         print("Error while reading competitors list.")
@@ -30,6 +31,11 @@ def _main():
         print("  LAST,  first,  club, rating")
         print
         raise
+
+    # Sort competitors by rank
+    rkey = lambda f: f[-1]
+    rcmp = lambda x,y: -2*cmp(x[0],y[0]) + 1*cmp(x[1:],y[1:])
+    fencers.sort(key=rkey, cmp=rcmp, reverse=True)
 
     # Determine pool sizes
     N = len(fencers)
@@ -44,7 +50,6 @@ def _main():
     if ps is None:
         raise Exception
     pools = ps[0]*[fs[0]] + ps[1]*[fs[1]]
-    print pools
 
     # Finalize and return
     return
