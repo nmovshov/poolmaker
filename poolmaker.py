@@ -32,7 +32,7 @@ def _main():
         print
         raise
 
-    # Sort competitors by rank
+    # Sort competitors by rank (NOTE: assumes correct rank code: '[A-Z]YY')
     rkey = lambda f: f[-1]
     rcmp = lambda x,y: -2*cmp(x[0],y[0]) + 1*cmp(x[1:],y[1:])
     fencers.sort(key=rkey, cmp=rcmp, reverse=True)
@@ -51,8 +51,21 @@ def _main():
         raise Exception
     pools = ps[0]*[fs[0]] + ps[1]*[fs[1]]
 
-    # Finalize and return
+    # Write output and return
+    output = _fmt_output(fencers, pools)
+    cout(output)
     return
+
+def _fmt_output(fencers, pools):
+    out = "Competitor list\n"
+    for f in fencers:
+        out += "{1:22s}{0:22s}{2:22s}{3[0]:8s}{3[1]}{3[2]}\n".format(*f)
+
+    out += "\n\n"
+    out += "Pool list\n"
+    for k in range(len(pools)):
+        out += "--)------- Pool # {} -------(-- ({})\n".format(k+1, pools[k])
+    return out
 
 def _PCL():
 
@@ -64,7 +77,8 @@ def _PCL():
     parser.add_argument('competitors_file', help="csv file containing list of " +
         "competitors with ratings and club affiliation.")
     parser.add_argument('-O','--output-file', help="Specify output to file " +
-        "instead of to stdout.")
+        "instead of to stdout.",
+        default=None)
     parser.add_argument('-d','--delimiter',
         help="single-character column delimiter used in input file if " +
              "non-standard. (Note: may need to be double-quoted.)",
