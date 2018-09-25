@@ -56,6 +56,9 @@ def _main():
     # Distribute fencers into pools (NOTE: In-place, modifies argument pools!)
     _fill_pools(fencers, pools, pool_sizes)
 
+    # (PLACEHOLDER) Resolve club conflicts (NOTE: in-place, modifies pools)
+    _swap_colluders(pools) # place holder, does nothing
+
     # Write output and return
     output = _fmt_output(fencers, pools)
     cout(output)
@@ -88,6 +91,9 @@ def _fill_pools(fencers, pools, pool_sizes):
         if next_pool == -1 or next_pool == len(pools):
             next_dir *= -1
             next_pool += next_dir
+    return
+
+def _swap_colluders(pools):
     return
 
 def _fmt_output(fencers, pools):
