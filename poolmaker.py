@@ -4,7 +4,7 @@
 # Bugs and questions to: Naor Movshovitz (nmovshov@gmail.com)
 #---------------------------------------------------------------------------------
 from __future__ import division
-import sys, os, shutil
+import sys
 import math
 import argparse
 import csv
@@ -76,14 +76,16 @@ def _fill_pools(fencers, pools, pool_sizes):
 def _fmt_output(fencers, pools):
     out = "Competitor list\n"
     for f in fencers:
-        out += "{1:22s}{0:22s}{2:22s}{3[0]:8s}{3[1]}{3[2]}\n".format(*f)
+        out += "{1:22s}{0:22s}{2:22s}{3[0]:8s}".format(*f)
+        out += "{}\n".format(f[3][1:])
 
     out += "\n\n"
     out += "Pool list\n"
     for k in range(len(pools)):
         out += "--)------- Pool # {} -------(-- ({})\n".format(k+1, len(pools[k]))
         for f in pools[k]:
-            out += "{1:22s}{0:22s}{2:22s}{3[0]:8s}{3[1]}{3[2]}\n".format(*f)
+            out += "{1:22s}{0:22s}{2:22s}{3[0]:8s}".format(*f)
+            out += "{}\n".format(f[3][1:])
         out += "\n"
     return out
 
