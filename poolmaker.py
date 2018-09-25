@@ -1,3 +1,4 @@
+#!/usr/bin/python
 #---------------------------------------------------------------------------------
 # POOLMAKER - a utility for dividing fencers into equal-difficulty pools
 #
@@ -32,7 +33,7 @@ def _main():
         print
         raise
 
-    # Sort competitors by rank (NOTE: assumes correct rank code: '[A-Z]YY')
+    # Sort competitors by rank (NOTE: assumes correct rank code: '[A-Z]YY' or 'U')
     rkey = lambda f: f[-1]
     rcmp = lambda x,y: -2*cmp(x[0],y[0]) + 1*cmp(x[1:],y[1:])
     fencers.sort(key=rkey, cmp=rcmp, reverse=True)
@@ -48,11 +49,11 @@ def _main():
         fs = (5,6)
         ps = _lmfactor(N,5,6)
     if ps is None:
-        raise Exception
+        raise Exception("Failed to find valid pool sizes.")
     pool_sizes = ps[0]*[fs[0]] + ps[1]*[fs[1]]
     pools = [[] for _ in pool_sizes]
 
-    # Distribute fencers into pools
+    # Distribute fencers into pools (NOTE: In-place, modifies argument pools!)
     _fill_pools(fencers, pools, pool_sizes)
 
     # Write output and return
@@ -60,7 +61,23 @@ def _main():
     cout(output)
     return
 
+def _lmfactor(N, L, M):
+    # Return factorization of positive integer into two arbitrary positive integers.
+
+    assert(N > 0)
+    if N%L == 0:
+        return (int(N/L), 0)
+    if N%M == 0:
+        return (0, int(N/M))
+    for k in range(int(math.ceil((N - M)/L) + 2)):
+        j = (N - k*L)/M
+        if j >= 0 and (int(j) - j) == 0:
+            return (k, int(j))
+    return None
+
 def _fill_pools(fencers, pools, pool_sizes):
+    # Deal fencers by rank (descending) into pools
+
     next_pool = 0
     next_dir = +1
     t_fencers = list(fencers); t_fencers.reverse() # tmp list to pop into pools
@@ -74,6 +91,8 @@ def _fill_pools(fencers, pools, pool_sizes):
     return
 
 def _fmt_output(fencers, pools):
+    # Return string with tournament information following MEentries.csv.format.
+
     out = "Competitor list\n"
     for f in fencers:
         out += "{1:22s}{0:22s}{2:22s}{3[0]:8s}".format(*f)
@@ -90,6 +109,7 @@ def _fmt_output(fencers, pools):
     return out
 
 def _PCL():
+    # Return struct with command line arguments as fields.
 
     parser = argparse.ArgumentParser(
         description="POOLMAKER - plan a fencing tournament",
@@ -98,9 +118,7 @@ def _PCL():
 
     parser.add_argument('competitors_file', help="csv file containing list of " +
         "competitors with ratings and club affiliation.")
-    parser.add_argument('-O','--output-file', help="Specify output to file " +
-        "instead of to stdout.",
-        default=None)
+
     parser.add_argument('-d','--delimiter',
         help="single-character column delimiter used in input file if " +
              "non-standard. (Note: may need to be double-quoted.)",
@@ -115,20 +133,6 @@ def _PCL():
         args.delimiter = ' '
 
     return args
-
-def _lmfactor(N, L, M):
-    # Return factorization of positive integer into two arbitrary positive integers.
-
-    assert(N > 0)
-    if N%L == 0:
-        return (int(N/L), 0)
-    if N%M == 0:
-        return (0, int(N/M))
-    for k in range(int(math.ceil((N - M)/L) + 2)):
-        j = (N - k*L)/M
-        if j >= 0 and (int(j) - j) == 0:
-            return (k, int(j))
-    return None
 
 if __name__ == "__main__":
     _main()
