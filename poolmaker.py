@@ -49,11 +49,28 @@ def _main():
         ps = _lmfactor(N,5,6)
     if ps is None:
         raise Exception
-    pools = ps[0]*[fs[0]] + ps[1]*[fs[1]]
+    pool_sizes = ps[0]*[fs[0]] + ps[1]*[fs[1]]
+    pools = [[] for _ in pool_sizes]
+
+    # Distribute fencers into pools
+    _fill_pools(fencers, pools, pool_sizes)
 
     # Write output and return
     output = _fmt_output(fencers, pools)
     cout(output)
+    return
+
+def _fill_pools(fencers, pools, pool_sizes):
+    next_pool = 0
+    next_dir = +1
+    t_fencers = list(fencers); t_fencers.reverse() # tmp list to pop into pools
+    while len(t_fencers) > 0:
+        if len(pools[next_pool]) < pool_sizes[next_pool]:
+            pools[next_pool].append(t_fencers.pop())
+        next_pool += next_dir
+        if next_pool == -1 or next_pool == len(pools):
+            next_dir *= -1
+            next_pool += next_dir
     return
 
 def _fmt_output(fencers, pools):
@@ -64,7 +81,10 @@ def _fmt_output(fencers, pools):
     out += "\n\n"
     out += "Pool list\n"
     for k in range(len(pools)):
-        out += "--)------- Pool # {} -------(-- ({})\n".format(k+1, pools[k])
+        out += "--)------- Pool # {} -------(-- ({})\n".format(k+1, len(pools[k]))
+        for f in pools[k]:
+            out += "{1:22s}{0:22s}{2:22s}{3[0]:8s}{3[1]}{3[2]}\n".format(*f)
+        out += "\n"
     return out
 
 def _PCL():
