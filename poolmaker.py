@@ -99,17 +99,17 @@ def _swap_colluders(pools):
 def _fmt_output(fencers, pools):
     # Return string with tournament information following MEentries.csv.format.
 
-    out = "Competitor list\n"
+    out = "Competitor List\n"
     for f in fencers:
-        out += "{1:22s}{0:22s}{2:22s}{3[0]:8s}".format(*f)
+        out += "{1:21s}{0:24s}{2:24s}{3[0]:8s}".format(*f)
         out += "{}\n".format(f[3][1:])
 
     out += "\n\n"
-    out += "Pool list\n"
+    out += "Pool List\n"
     for k in range(len(pools)):
         out += "--)------- Pool # {} -------(-- ({})\n".format(k+1, len(pools[k]))
         for f in pools[k]:
-            out += "{1:22s}{0:22s}{2:22s}{3[0]:8s}".format(*f)
+            out += "{1:21s}{0:24s}{2:24s}{3[0]:8s}".format(*f)
             out += "{}\n".format(f[3][1:])
         out += "\n"
     return out
