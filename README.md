@@ -9,7 +9,7 @@ Usage:
 or if your python is in a standrd location you can `chmod u+x poolmaker.py`
 run as an executable:
 
-    ./poolmaker input_file.csv
+    ./poolmaker.py input_file.csv
 
 ### Notes on implementation
 I implemented `toolmaker.py` as a command-line tool, i.e., meant to be invoked
